@@ -198,7 +198,6 @@ describe('Invitation', () => {
 		})
 
 		it('it should return partners within a given distance', () => {
-			const originCoordinates = { lat: 51.515419, long: -0.141099 };
 			const distance = 100;
 			const partners = [
 				{
@@ -212,7 +211,7 @@ describe('Invitation', () => {
 				}
 			];
 
-			const matchedPartners = getPartnersByDistance(originCoordinates, distance, partners);
+			const matchedPartners = getPartnersByDistance(defaultOriginCoordinates, distance, partners);
 			assert.equal(matchedPartners.length, 1);
 			assert.equal(matchedPartners[0].organization, partners[0].organization);
 		})
@@ -231,9 +230,36 @@ describe('Invitation', () => {
 				},
 			];
 
-			console.log('defaultOriginCoordinates, distance, partners ', defaultOriginCoordinates, distance, partners);
 			const matchedPartners = getPartnersByDistance(defaultOriginCoordinates, distance, partners);
 			assert.equal(matchedPartners.length, 0);
+		})
+
+		it('it should sort the partners alphabetically', () => {
+			const partners = [
+				{
+					"organization": "Gallus Consulting",
+					"offices": [
+						{
+							"address": "Newton House, Northampton Science Park, Moulton Park, Kings Park Road, Northampton, NN3 6LG",
+							"coordinates": "52.277409,-0.877935999999977"
+						}
+					]
+				},
+				{
+					"organization": "Blue Square 360",
+					"offices": [
+						{
+							"address": "St Saviours Wharf, London SE1 2BE",
+							"coordinates": "51.515419,-0.141099"
+						}
+					]
+				}
+			];
+
+			const matchedPartners = getPartnersByDistance(defaultOriginCoordinates, defaultMaxDistance, partners);
+
+			assert.equal(matchedPartners[0].organization, partners[1].organization);
+			assert.equal(matchedPartners[1].organization, partners[0].organization);
 		})
 	})
 });
